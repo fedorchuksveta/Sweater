@@ -1,35 +1,43 @@
 package com.example.sweater;
 
 import com.example.sweater.entity.Remind;
-import com.example.sweater.repository.RemindRepository;
+import com.example.sweater.service.ReminderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
 public class GreetingController {
     @Autowired
-    private RemindRepository remindRepository;
+    private ReminderService service;
 
 
     @GetMapping("/greeting")
-    public List<Remind> greeting() {
-        List<Remind> list = remindRepository.findAll();
-        return list;
+    public List<Remind> getReminders() {
+        return service.All();
+
     }
 
-    private Remind createMockRemind() {
-        Remind remind = new Remind();
-        remind.setId(1);
-        remind.setRemindDate(new Date());
-        remind.setTitle("My first remind");
-        return remind;
+    @GetMapping("/greeting/{id}")
+    @ResponseBody
+    public Remind getReminder(@PathVariable("id") long remindID) {
+        return service.One(remindID);
     }
+
+    @RequestMapping(value = "/greeting", method = RequestMethod.POST)
+    @ResponseBody
+    public Remind saveReminder(@RequestBody Remind remind) {
+        return service.save(remind);
+    }
+
+    @RequestMapping(value = "/greeting/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void delete(@PathVariable long id) {
+        service.remove(id);
+    }
+
 
     @GetMapping
     public String main(
