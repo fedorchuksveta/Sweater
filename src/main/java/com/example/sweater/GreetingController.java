@@ -13,15 +13,14 @@ import java.util.List;
 
 @RestController
 public class GreetingController {
-@Autowired
-private RemindRepository remindRepository;
-
+    @Autowired
+    private RemindRepository remindRepository;
 
 
     @GetMapping("/greeting")
-    public Remind greeting() {
+    public List<Remind> greeting() {
         List<Remind> list = remindRepository.findAll();
-        return createMockRemind();
+        return list;
     }
 
     private Remind createMockRemind() {
@@ -34,7 +33,7 @@ private RemindRepository remindRepository;
 
     @GetMapping
     public String main(
-        @RequestParam(name = "name", required = false, defaultValue="World") String name,Model model){
+            @RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         model.addAttribute("name", "SWEATER");
         return "Hello Sweater";
     }
